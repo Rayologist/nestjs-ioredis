@@ -8,8 +8,8 @@ export class Redis {
     this._client = client;
   }
 
-  get<T>(key: string) {
-    return get<T>(key, this._client);
+  get<T>(key: string, callback?: Callback<string | null>) {
+    return get<T>(key, this._client, callback);
   }
 
   set<T>(args: {
@@ -21,8 +21,11 @@ export class Redis {
     return set(args, this._client);
   }
 
-  mget<T extends Record<string, unknown>>(keys: (keyof T)[]) {
-    return mget<T>(keys, this._client);
+  mget<T extends Record<string, unknown>>(
+    keys: (keyof T)[],
+    callback?: Callback<(string | null)[]>,
+  ) {
+    return mget<T>(keys, this._client, callback);
   }
 
   mset<T extends Record<string, unknown>>(args: {
@@ -34,8 +37,8 @@ export class Redis {
     return mset<T>(args, this._client);
   }
 
-  del(...keys: string[]) {
-    return del(this._client, ...keys);
+  del(keys: string[], callback?: Callback<number>) {
+    return del(keys, this._client, callback);
   }
 
   checkHealth() {

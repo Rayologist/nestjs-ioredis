@@ -9,8 +9,8 @@ export class RedisCluster {
     this._client = cluster;
   }
 
-  get<T>(key: string) {
-    return get<T>(key, this._client);
+  get<T>(key: string, callback?: Callback<string | null>) {
+    return get<T>(key, this._client, callback);
   }
 
   set(args: {
@@ -22,8 +22,11 @@ export class RedisCluster {
     return set(args, this._client);
   }
 
-  mget<T extends Record<string, unknown>>(keys: (keyof T)[]) {
-    return mget<T>(keys, this._client);
+  mget<T extends Record<string, unknown>>(args: {
+    keys: (keyof T)[];
+    callback?: Callback<(string | null)[]>;
+  }) {
+    return mget<T>(args.keys, this._client, args.callback);
   }
 
   mset(args: {
@@ -35,8 +38,8 @@ export class RedisCluster {
     return mset(args, this._client);
   }
 
-  del(...keys: string[]) {
-    return del(this._client, ...keys);
+  del(keys: string[], callback?: Callback<number>) {
+    return del(keys, this._client, callback);
   }
 
   checkHealth() {
